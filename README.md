@@ -35,6 +35,7 @@ Cửa hàng bán sách - Book Spring Commerce![ui](https://github.com/TienPerry/
 2. Open the project in IntelliJ IDEA
 3. Select option "Run"
 4. Access http://localhost:8080 to use application
+5. Admin can add products and category in http://localhost:8080/admin page
 
 
 # Postman Snapshots
