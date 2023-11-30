@@ -1,0 +1,347 @@
+<!doctype html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org">
+<head>
+    <title>Book Spring Commerce</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css"
+          integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js" integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <style>
+        /*body {*/
+        /*    margin:2%;*/
+        /*}*/
+        h1, h2 {
+            margin:20px 0px;
+        }
+    </style>
+</head>
+<body>
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<header>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light p-2">
+        <a class="navbar-brand" th:href="@{/admin}">Admin</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/admin}">Quản lý danh mục</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/admin/books}">Quản lý sản phẩm</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/">Thoát</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+</header>
+
+<div class="container my-3">
+    <h4 class="my-5 text-primary text-center text-uppercase">Danh sách sản phẩm</h4>
+
+    <button id="addBtn" class="btn btn-success btn-sm my-4" data-bs-toggle="modal" data-bs-target="#modalAdd" >Thêm sản phẩm mới</button>
+    <p>Chọn một sản phẩm để xem chi tiết</p>
+
+    <table class="table table-striped border">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Tên sản phẩm</th>
+            <th>Danh mục</th>
+            <th>Tác giả</th>
+            <th>Số lượng</th>
+            <th>Thao tác</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="p, iStat: ${products}">
+            <th scope="row" th:text="${iStat.index+1}">1</th>
+            <td th:text="${p.name}" style="cursor: pointer;" class="id clickable text-center"
+                data-bs-toggle="modal"
+                data-bs-target="#modalUpd"
+                th:attr="onclick='rowDetailOnclicked(\'' + ${p.id} + '\')'"></td>
+            <td th:text="${p.category.name}" style="cursor: pointer;" class="id clickable text-center"
+                data-bs-toggle="modal"
+                data-bs-target="#modalUpd"
+                th:attr="onclick='rowDetailOnclicked(\'' + ${p.id} + '\')'"></td>
+            <td th:text="${p.author}" style="cursor: pointer;" class="id clickable text-center"
+                data-bs-toggle="modal"
+                data-bs-target="#modalUpd"
+                th:attr="onclick='rowDetailOnclicked(\'' + ${p.id} + '\')'"></td>
+            <td th:text="${p.quantity}" style="cursor: pointer;" class="id clickable text-center"
+                data-bs-toggle="modal"
+                data-bs-target="#modalUpd"
+                th:attr="onclick='rowDetailOnclicked(\'' + ${p.id} + '\')'"></td>
+            <td>
+                <button style="pointer-events: fill;"
+                        type="button"
+                        class="btn btn-outline-danger"
+                        data-bs-toggle="modal"
+                        data-bs-target="#modalDel"
+                        th:data-id ="${p.id}"
+                        th:data-name="${p.name}">Xóa</button>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+<!-- Confirm delete -->
+<div class="modal fade" id="modalDel" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h4 class="modal-title">Xóa danh mục</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <!-- Modal body -->
+            <div class="modal-body">
+                Bạn có chắc rằng muốn xóa <span class="fw-bold" id="namePro"></span>?
+            </div>
+
+            <!-- Modal footer -->
+            <div class="modal-footer">
+                <form id="formDelete" action="/admin/deleteCategory/" method="post">
+                    <button type="submit" class="btn btn-danger">Xóa</button>
+                </form>
+                <button type="button" class="btn btn-dark" data-bs-dismiss="modal">Đóng</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- End Confirm delete -->
+
+
+<!-- Update category -->
+<div class="modal fade" id="modalUpd" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h4 class="modal-title">Cập nhật thông tin sản phẩm</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <!-- Modal body -->
+            <div class="modal-body">
+                <form id="formUpdate" novalidate class="mt-3"  method="post" th:object="${productDTO}" enctype="multipart/form-data">
+                    <input id="updateId" type="hidden" name="id" th:field="*{id}" >
+                    <div class="form-group">
+                        <label for="name">Tên sản phẩm</label>
+                        <input th:field="*{name}" id="edtName" class="form-control" type="text" placeholder="Nhập tên sản phẩm" name="name" >
+                    </div>
+                    <div class="form-group">
+                        <label for="price">Giá</label>
+                        <input th:field="*{price}" id="edtPrice" class="form-control" type="number" placeholder="Nhập giá sản phẩm" name="price" >
+                    </div>
+                    <div class="form-group">
+                        <label for="author">Tên tác giả</label>
+                        <input th:field="*{author}" id="edtAuthor" class="form-control" type="text" placeholder="Nhập tên tác giả" name="author" >
+                    </div>
+                    <div class="form-group">
+                        <label for="category">Chọn danh mục</label>
+                        <select class="form-control" th:field="*{categoryID}" id="edtCategory" name="category">
+                            <option th:each="cate :${categories}"
+                                    th:value="${cate.id}"
+                                    th:text="${cate.name}"
+                            >
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="description">Mô tả</label>
+                        <textarea th:field="*{description}" name="description" form="formUpdate" id="edtDescription" class="form-control" placeholder="Nhập mô tả"></textarea></br>
+                    </div>
+                    <div class="form-group">
+                        <label for="quantity">Số lượng</label>
+                        <input th:field="*{quantity}" id="edtQuantity" class="form-control" type="number" placeholder="Nhập số lượng sản phẩm" name="quantity" value="">
+                    </div>
+                    <div class="form-group">
+                        <div class="input-group">
+                            <div class="custom-file">
+                                <input id="edtFile" class="custom-file-input" type="file" name="imageProduct" accept="image/*">
+                                <label class="custom-file-label" for="imageProduct" id="edtFileNameLabel">Chọn ảnh</label>
+                            </div>
+                            <input id="imageNameUpd" type="hidden" name="imgNameUpd" th:value="${productDTO.imageFile}">
+                        </div>
+                    </div>
+            </div>
+            <!-- Modal footer -->
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-primary">Cập nhật</button>
+                <button type="button" class="btn btn-dark" data-bs-dismiss="modal">Đóng</button>
+            </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!-- End Update category -->
+
+<!-- Add category -->
+<div class="modal fade" id="modalAdd" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h4 class="modal-title">Thêm sản phẩm mới</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <!-- Modal body -->
+            <div class="modal-body">
+                <form id="formAdd" novalidate class="mt-3" method="post" th:action="@{/admin/books/add}" th:object="${productDTO}" enctype="multipart/form-data">
+                    <input type="hidden" name="id" th:field="*{id}">
+                    <div class="form-group">
+                        <label for="name">Tên sản phẩm</label>
+                        <input th:field="*{name}" id="newName" class="form-control" type="text" placeholder="Nhập tên sản phẩm" name="name" value="">
+                    </div>
+                    <div class="form-group">
+                        <label for="price">Giá</label>
+                        <input th:field="*{price}" id="newPrice" class="form-control" type="number" placeholder="Nhập giá sản phẩm" name="price" value="">
+                    </div>
+                    <div class="form-group">
+                        <label for="author">Tên tác giả</label>
+                        <input th:field="*{author}" id="newAuthor" class="form-control" type="text" placeholder="Nhập tên tác giả" name="author" value="">
+                    </div>
+                    <div class="form-group">
+                        <label for="category">Chọn danh mục</label>
+                        <select class="form-control" th:field="*{categoryID}" id="category" name="category">
+                            <option th:each="cate :${categories}"
+                                    th:value="${cate.id}"
+                                    th:text="${cate.name}"
+                            >
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="description">Mô tả</label>
+                        <textarea th:field="*{description}" name="description" form="formAdd" id="newDescription" class="form-control" placeholder="Nhập mô tả"></textarea></br>
+                    </div>
+                    <div class="form-group">
+                        <label for="quantity">Số lượng</label>
+                        <input th:field="*{quantity}" id="newQuantity" class="form-control" type="number" placeholder="Nhập số lượng sản phẩm" name="quantity" value="">
+                    </div>
+                    <div class="form-group">
+                        <div class="input-group">
+                            <div class="custom-file">
+                                <input id="newFile" class="custom-file-input" type="file" name="imageProduct" accept="image/*">
+                                <label class="custom-file-label" for="imageProduct" id="newFileNameLabel">Chọn ảnh</label>
+                            </div>
+                            <input type="hidden" name="imgName" th:value="${productDTO.imageFile}">
+                        </div>
+                    </div>
+
+            </div>
+            <!-- Modal footer -->
+            <div class="modal-footer">
+                <button id="btnAdd" type="submit" class="btn btn-primary">Thêm</button>
+                <button type="button" class="btn btn-dark" data-bs-dismiss="modal">Đóng</button>
+            </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!-- End Add user -->
+
+
+<script>
+    $(function(){
+        setTimeout(function(){$(".alert").hide()}, 2000);
+    });
+
+    $(function() {
+        $('.navbar-toggler').on('click', function(e) {
+            e.preventDefault();
+            $(this).next('.collapse').collapse('toggle');
+            $('.collapse').not($(this).next('.collapse')).collapse('hide');
+        });
+    });
+
+
+    async function rowDetailOnclicked(id) {
+        try {
+            const response = await fetch(`/book/${id}`);
+            if (response.ok) {
+                const product = await response.json();
+                // Handle the retrieved category data
+                console.log("PRODUCT FROM FECTH DETAILS: ", product);
+                // Continue with further processing or manipulation
+                $('#edtFileNameLabel').text(product.imageFile);
+                // // File input change event
+                $('#edtFile').on('change', function() {
+                    const fileName = $(this).val().split('\\').pop();
+                    $('#edtFileNameLabel').text(fileName);
+                    $('#imageNameUpd').attr("value", fileName);
+                });
+
+                $('#imageNameUpd').attr("value", product.imageFile);
+                $('#updateId').attr("value", product.id);
+                $('#edtName').attr("value", product.name);
+                $('#edtPrice').attr("value", product.price);
+                $('#edtAuthor').attr("value",product.author);
+                $('#edtDescription').val(product.description);
+                $('#edtQuantity').attr("value", product.quantity);
+
+                $('#formUpdate').attr('action', "/admin/books/update/" + product.id);
+                $('#edtCategory').val(product.categoryID);
+                $(document).ready(function() {
+                    $("#edtCategory").val(product.categoryID);
+                });
+
+
+                $('#modalUpd').modal('show');
+            } else {
+                console.error('Error:', response.status);
+            }
+
+
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    }
+
+    $('#modalAdd').on('show.bs.modal', async e => {
+        const btn = e.relatedTarget;
+        const id = btn.getAttribute("data-id");
+
+        $('#newFile').on('change', function() {
+            const fileName = $(this).val().split('\\').pop();
+            $('#newFileNameLabel').text(fileName);
+        });
+    });
+
+
+    $('#modalDel').on('show.bs.modal', e => {
+        const btn = e.relatedTarget;
+        const id = btn.getAttribute("data-id");
+        const name = btn.getAttribute("data-name");
+        const act = '/admin/deleteCategory/'+id;
+        $('#namePro').html(name);
+        $('#formDelete').attr('action', act);
+    });
+
+    // $('#modalUpd').on('show.bs.modal', async e => {
+    //     const btn = e.relatedTarget;
+    //     $('#editFile').on('change', function() {
+    //         const fileName = $(this).val().split('\\').pop();
+    //         $('#edtFileNameLabel').text(fileName);
+    //     });
+    // });
+
+    // $('#editFile').on('change', function() {
+    //     const fileName = $(this).val().split('\\').pop();
+    //     $('#edtFileNameLabel').text(fileName);
+    // });
+
+</script>
+
+</body>
+</html>

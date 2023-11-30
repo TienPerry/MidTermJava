@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<head>
+    <title>Book Spring Commerce</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <!--    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">-->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css"
+          integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js" integrity="sha384-oBqDVmMz9ATKxIep9tiCxS/Z9fNfEXiDAYTujMAeBAsjFuCZSmKbSSUnQlmh/jp3" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.min.js" integrity="sha384-cuYeSxntonz0PPNlHhBs68uyIAVpIIOZZ5JqeqvYYIcEL727kskC66kF92t6Xl2V" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <!--    <link rel="stylesheet" href="/css/style.css">-->
+    <style>
+        /*body {*/
+        /*    margin:2%;*/
+        /*}*/
+        h1, h2 {
+            margin:20px 0px;
+        }
+    </style>
+</head>
+<body>
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<header>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light p-2 ">
+        <div class="container-fluid">
+            <a class="navbar-brand" th:href="@{/}">Spring Commerce</a>
+
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <form method="get" th:action="@{/search}" class="me-auto mt-2 mb-2 mb-lg-0" role="search">
+                    <div class="row">
+                        <div class="col">
+                            <input name="name" class="form-control" type="search" placeholder="Nhập tên sản phẩm" aria-label="Search">
+                        </div>
+                        <div class="col-auto">
+                            <button class="btn btn-outline-success" type="submit">Tìm kiếm</button>
+                        </div>
+                    </div>
+                </form>
+                <ul class="navbar-nav ml-auto d-flex">
+                    <li class="nav-item active">
+                        <a class="nav-link" sec:authorize="isAnonymous()" th:href="@{/login}" href="#">login</a>
+                    </li>
+                    <li class="nav-item active">
+                        <a class="nav-link" sec:authorize="isAuthenticated()" th:href="@{/logout}" href="#">logout</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/cart}">Đơn hàng</a>
+                    </li>
+                    <li class="nav-item ml-auto">
+                        <a class="nav-link" th:href="@{/cart}">Giỏ hàng</a>
+                    </li>
+                    <li class="nav-item m-0 active">
+                        <span class="nav-link" th:text="${cartNumber}">0</span>
+                    </li>
+
+
+                </ul>
+            </div>
+        </div>
+    </nav>
+</header>
+
+<div class="container" style="margin-top: 30px">
+    <h3 class="text-center">GIỎ HÀNG CỦA BẠN:</h3>
+    <div class="row">
+        <div class="card wish-list mb-4">
+            <div class="card-body">
+
+                <h5 class="mb-4">Cart (<span th:text="${cartNumber}">2</span> items)</h5>
+
+                <div class="row mb-4" th:each="item, iStat : ${cart}">
+                    <div class="col-md-5 col-lg-3 col-xl-3">
+                        <div class="mb-3 mb-md-0">
+                            <img class="img-fluid" style="width: 200px; height: fit-content"
+                                 th:src="@{${'/products/' + item.imageFile}}"
+                                 src="https://mdbootstrap.com/img/Photos/Horizontal/E-commerce/Vertical/12a.jpg" alt="Sample">
+
+                        </div>
+                    </div>
+                    <div class="col-md-7 col-lg-9 col-xl-9">
+                        <div>
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <h5 th:text="${item.name}">Blue denim shirt</h5>
+                                    <p class="mb-3 text-uppercase small">Author: <span th:text="${item.author}"></span></p>
+                                    <!--                                                <p class="mb-2 text-uppercase small">Category: <span th:text="${item.category.name}"></span></p>-->
+
+                                </div>
+
+                            </div>
+                            <div class="mt-5 d-flex justify-content-between align-items-center">
+                                <div>
+                                    <a href="#!" th:href="@{/removeItem/{idx}(idx=${iStat.index})}"  type="button" class="btn btn-danger small text-uppercase mr-3"><i
+                                            class="fas fa-trash-alt mr-1"></i> Xóa sản phẩm </a>
+
+                                </div>
+                                <p class="mb-0"><span><strong><span th:text="${item.price}"></span></strong> VND</span></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <hr class="mb-4">
+
+                <p class="text-danger mb-0"><i class="fas fa-info-circle mr-1"></i> Hãy xác nhận để chúng tôi giữ sản phẩm cho bạn nhé! </p>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Card -->
+        <div class="card mb-4">
+            <div class="card-body">
+
+                <h5 class="mb-3">Tổng tiền </h5>
+
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item d-flex justify-content-between align-items-center border-0 px-0 pb-0">
+                        Số tiền phải trả
+                        <span><span th:text="${total}"></span> VND</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                        Hình thức
+                        <span>Trực tiếp</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center border-0 px-0 mb-3">
+                        <div>
+                            <strong>Tổng tiền </strong>
+                            <strong>
+                                <p class="mb-0">(đã bao gồm thuế VAT)</p>
+                            </strong>
+                        </div>
+                        <span><strong><span th:text="${total}"></span></strong> VND</span>
+                    </li>
+                </ul>
+
+                <a th:href="@{/checkout}" h class="btn d-flex justify-content-center btn-primary btn-block waves-effect waves-light">Xác nhận đặt đơn hàng</a>
+
+            </div>
+        </div>
+        <!-- Card -->
+    </div>
+</div>
+
+<script>
+    $(function() {
+        $('.navbar-toggler').on('click', function(e) {
+            e.preventDefault();
+            $(this).next('.collapse').collapse('toggle');
+            $('.collapse').not($(this).next('.collapse')).collapse('hide');
+        });
+    });
+</script>
+</body>
+</html>
