@@ -1,0 +1,12 @@
+INSERT INTO roles (id, name) VALUES
+(1, 'ROLE_ADMIN'),
+(2, 'ROLE_USER');
+
+
+// Tài khoản admin là : admin@gmail.com ->  Password: 123456
+INSERT INTO users (id, email, first_name, last_name, password) VALUES
+(1, 'admin@gmail.com', 'Dinh', 'Tien', '$2a$10$moTjfAVBJzNS32q7NPPVh.iAGDbZSkjZJBkdxT5ZLKQ3R1Vh/y9Fi');users_seq
+
+insert into user_role(user_id, role_id) values
+(1,1),
+(1,2);
